@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Platform } from 'react-native';
 import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
+
 
 class ReviewScreen extends Component {
 	static navigationOptions = ({ navigation }) => ({
@@ -32,4 +34,8 @@ class ReviewScreen extends Component {
 	}
 }
 
-export default ReviewScreen;
+function mapStateToProps(state) {
+	return { likedJobs: state.likedJobs };
+}
+
+export default connect(mapStateToProps)(ReviewScreen);

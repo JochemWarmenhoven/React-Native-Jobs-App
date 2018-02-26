@@ -2,7 +2,7 @@ import axios from 'axios';
 import reverseGeocode from 'latlng-to-zip';
 import qs from 'qs';
 
-import { FETCH_JOBS } from './types';
+import { FETCH_JOBS, LIKE_JOB } from './types';
 
 const JOB_QUERY_PARAMS = {
 	publisher: '4201738803816157',
@@ -28,8 +28,14 @@ export const fetchJobs = (region, callback) => async (dispatch) => {
 		let { data } = await axios.get(url);
 		dispatch({ type: FETCH_JOBS, payload: data });
 		callback();
-
 	} catch (error) {
 		console.error(error);
 	}
-}
+};
+
+export const likeJob = (job) => {
+	return {
+		payload: job,
+		type: LIKE_JOB,
+	};
+};
