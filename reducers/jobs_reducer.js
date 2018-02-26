@@ -1,7 +1,7 @@
 import { FETCH_JOBS } from '../actions/types';
 
 const initialState = {
-
+	results: [],
 };
 
 export default (state = initialState, action) => {
