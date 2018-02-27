@@ -2,7 +2,7 @@ import axios from 'axios';
 import reverseGeocode from 'latlng-to-zip';
 import qs from 'qs';
 
-import { FETCH_JOBS, LIKE_JOB } from './types';
+import { FETCH_JOBS, LIKE_JOB, CLEAR_LIKED_JOBS } from './types';
 
 const JOB_QUERY_PARAMS = {
 	publisher: '4201738803816157',
@@ -13,7 +13,7 @@ const JOB_QUERY_PARAMS = {
 	q: 'javascript',
 };
 
-const JOB_ROOT_URL = 'http://api.indeed.com/ads/apisearch?'
+const JOB_ROOT_URL = 'http://api.indeed.com/ads/apisearch?';
 
 const buildJobsUrl = (zip) => {
 	const query = qs.stringify({ ...JOB_QUERY_PARAMS, l: zip });
@@ -33,9 +33,11 @@ export const fetchJobs = (region, callback) => async (dispatch) => {
 	}
 };
 
-export const likeJob = (job) => {
-	return {
-		payload: job,
-		type: LIKE_JOB,
-	};
-};
+export const likeJob = job => ({
+	payload: job,
+	type: LIKE_JOB,
+});
+
+export const clearLikedJobs = () => ({
+	type: CLEAR_LIKED_JOBS,
+});

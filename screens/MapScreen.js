@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import PropTypes from 'prop-types';
+import { View, ActivityIndicator } from 'react-native';
 import { connect } from 'react-redux';
 
 import { MapView } from 'expo';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 import * as actions from '../actions';
 
 class MapScreen extends Component {
+	static navigationOptions = {
+		title: 'Map',
+		tabBarIcon: ({ tintColor }) => <Icon name="my-location" size={30} color={tintColor} />,
+	}
 	state = {
 		mapLoaded: false,
 		region: {
@@ -32,18 +37,19 @@ class MapScreen extends Component {
 	}
 
 	render() {
+		const { flexStyle, justifyContent } = styles;
 		if (!this.state.mapLoaded) {
 			return (
-				<View style={{ flex: 1, justifyContent: 'center' }}>
+				<View style={[flexStyle, justifyContent]}>
 					<ActivityIndicator size="large" />
 				</View>
 			);
 		}
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={flexStyle}>
 				<MapView
 					region={this.state.region}
-					style={{ flex: 1 }}
+					style={flexStyle}
 					onRegionChangeComplete={this.onRegionChangeComplete}
 				/>
 				<View style={styles.buttonContainer}>
@@ -59,6 +65,7 @@ class MapScreen extends Component {
 		);
 	}
 }
+
 const styles = {
 	buttonContainer: {
 		position: 'absolute',
@@ -66,6 +73,19 @@ const styles = {
 		left: 0,
 		right: 0,
 	},
+	flexStyle: {
+		flex: 1,
+	},
+	justifyContent: {
+		justifyContent: 'center',
+	},
+};
+
+MapScreen.propTypes = {
+	navigation: PropTypes.shape({
+		navigate: PropTypes.func.isRequired,
+	}).isRequired,
+	fetchJobs: PropTypes.func.isRequired,
 };
 
 export default connect(null, actions)(MapScreen);

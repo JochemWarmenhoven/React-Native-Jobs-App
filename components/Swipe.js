@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
 	View,
 	Animated,
@@ -37,7 +38,7 @@ class Swipe extends Component {
 				} else {
 					this.resetPosition();
 				}
-			}
+			},
 		});
 
 		this.state = { panResponder, position, index: 0 };
@@ -50,44 +51,50 @@ class Swipe extends Component {
 	}
 
 	componentWillUpdate() {
-		UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-		LayoutAnimation.spring();
-	}
-
-	forceSwipe(direction) {
-		const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
-		Animated.timing(this.state.position, {
-			toValue: { x, y: 0 },
-			duration: SWIPE_OUT_DURATION
-		}).start(() => this.onSwipeComplete(direction));
+		if (UIManager.setLayoutAnimationEnabledExperimental
+			&& UIManager.setLayoutAnimationEnabledExperimental(true)) {
+			LayoutAnimation.spring();
+		}
 	}
 
 	onSwipeComplete(direction) {
 		const { onSwipeLeft, onSwipeRight, data } = this.props;
 		const item = data[this.state.index];
 
-		direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
+		if (direction === 'right') {
+			onSwipeRight(item);
+		} else {
+			onSwipeLeft(item);
+		}
 		this.state.position.setValue({ x: 0, y: 0 });
 		this.setState({ index: this.state.index + 1 });
-	}
-
-	resetPosition() {
-		Animated.spring(this.state.position, {
-			toValue: { x: 0, y: 0 }
-		}).start();
 	}
 
 	getCardStyle() {
 		const { position } = this.state;
 		const rotate = position.x.interpolate({
 			inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
-			outputRange: ['-120deg', '0deg', '120deg']
+			outputRange: ['-120deg', '0deg', '120deg'],
 		});
 
 		return {
 			...position.getLayout(),
-			transform: [{ rotate }]
+			transform: [{ rotate }],
 		};
+	}
+
+	resetPosition() {
+		Animated.spring(this.state.position, {
+			toValue: { x: 0, y: 0 },
+		}).start();
+	}
+
+	forceSwipe(direction) {
+		const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+		Animated.timing(this.state.position, {
+			toValue: { x, y: 0 },
+			duration: SWIPE_OUT_DURATION,
+		}).start(() => this.onSwipeComplete(direction));
 	}
 
 	renderCards() {
@@ -102,7 +109,7 @@ class Swipe extends Component {
 				return (
 					<Animated.View
 						key={item[this.props.keyProp]}
-						style={[this.getCardStyle(), styles.cardStyle, { zIndex: 99 }]}
+						style={[this.getCardStyle(), styles.cardStyle, styles.zIndex]}
 						{...this.state.panResponder.panHandlers}
 					>
 						{this.props.renderCard(item)}
@@ -135,8 +142,19 @@ class Swipe extends Component {
 const styles = {
 	cardStyle: {
 		position: 'absolute',
-		width: SCREEN_WIDTH
-	}
+		width: SCREEN_WIDTH,
+	},
+	zIndex: {
+		zIndex: 99,
+	},
+};
+Swipe.propTypes = {
+	renderCard: PropTypes.func.isRequired,
+	keyProp: PropTypes.string,
+	renderNoMoreCards: PropTypes.func.isRequired,
+	data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+	onSwipeLeft: PropTypes.func,
+	onSwipeRight: PropTypes.func,
 };
 
 export default Swipe;

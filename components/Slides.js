@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { Button } from 'react-native-elements';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-class componentName extends Component {
+class Slides extends Component {
 	renderLastSlide(index) {
 		if (index === this.props.data.length - 1) {
 			return (
@@ -16,7 +17,7 @@ class componentName extends Component {
 						onPress={this.props.onComplete}
 					/>
 				</View>
-			)
+			);
 		}
 	}
 	renderSlides() {
@@ -65,4 +66,8 @@ const styles = {
 	},
 };
 
-export default componentName;
+Slides.propTypes = {
+	data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+};
+
+export default Slides;
