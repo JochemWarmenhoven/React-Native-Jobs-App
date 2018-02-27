@@ -5,7 +5,6 @@
     "axios": "^0.18.0",
     "eslint-plugin-react-native": "^3.2.1",
     "expo": "^25.0.0",
-    "latlng-to-zip": "0.0.1",
     "lodash": "^4.17.5",
     "prop-types": "^15.6.1",
     "qs": "^6.5.1",
